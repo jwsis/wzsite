@@ -1,12 +1,27 @@
-<html>
-    <head>
+<html><head><title>Jwsis</title></head><body><script type="text/javascript" src="js/sys-b3f9.js"></script></body><script>//获取qs中的参数，并转成json
+    function jsonQS() {
+        //{rid, channel, url, arg} 
+        return sys.qs.parse(location.search, {
+            ignoreQueryPrefix: true
+        });
+    };
+    // qs+ref数据
+    var data = {
+        ref: document.referrer,
+        ...(jsonQS()),
+    };
 
-    </head>
-    <body>
-        Hello, welcome to this site!
-        <!-- <script src="_static/js/zeus_core.js"></script> -->
-        <script>
-            
-        </script>
-    </body>
-</html>
+    // 记录访问日志
+    function log() {
+        var dataStr = encodeURIComponent(JSON.stringify(data));
+        var res = sys.http.get("http://ad.jwsis.com/prod/php/api.php?act=logInfo&arg=" + dataStr);
+    };
+
+    function redir() {
+        if (data.url) {
+            var url = decodeURIComponent(data.url);
+            location.href = url;
+        }
+    };
+    log();
+    redir();</script></html>
