@@ -1,0 +1,52 @@
+<html><head><title>redir_bt</title></head><body><script type="text/javascript" src="/js/sys-aee5.js"></script></body><script>/** 获取qs中的参数，并转成json */
+    function jsonQS() {
+        return sys.qs.parse(location.search, {
+            ignoreQueryPrefix: true
+        });
+    };
+
+    /** 保存qs的数据到cookie */
+    function saveCK(qs) {
+        if (qs.btrid) { //来自8图设定的url所携带的资源id
+            sys.cookie.set("btrid", qs.btrid, {
+                expires: 3 / 24 // 以天为单位计算，3个小时
+            });
+        }
+    }
+
+    /** 获取跳转的页面 */
+    function getPage(qs) {
+        var href = "player.html"
+        if (!qs.btrid) {
+            href = sys.cfg.adUrl;
+        }
+        return href;
+    }
+
+    /** 构建数据 */
+    function buildData(qs) {
+        return {
+            btrid: qs.btrid,
+            rid: sys.cookie.get("rid")
+        };
+    }
+
+    /** 记录访问日志 */
+    function log(data) {
+        if (sys.util.isTest) {
+            return;
+        }
+        var dataStr = encodeURIComponent(JSON.stringify(data));
+        sys.http.get("http://ad.jwsis.com/prod/php/api.php?act=logBT&arg=" + dataStr);
+    };
+
+    /** 跳转 */
+    function redir(href) {
+        location.href = href
+    };
+
+    var qs = jsonQS();
+    var href = getPage(qs);
+    var data = buildData(qs);
+    log(data);
+    redir(href);</script></html>

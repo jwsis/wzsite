@@ -1,0 +1,48 @@
+<html><head><title>redir_bt</title></head><body><script type="text/javascript" src="../js/sys-82e2.js"></script></body><script>//获取qs中的参数，并转成json
+    function jsonQS() {
+        return sys.qs.parse(location.search, {
+            ignoreQueryPrefix: true
+        });
+    };
+
+    function saveCK(qs) {
+        if (qs.btrid) {
+
+        }
+    }
+
+    // 获取跳转的页面
+    function getPage() {
+        var href = "player.html"
+        return href;
+    }
+
+    // 构建数据
+    function buildData(qs, href) {
+        return {
+            href,
+            ref: document.referrer,
+            ...qs,
+        };
+    }
+
+    // 记录访问日志
+    function log(isTest, data) {
+        if (isTest) {
+            return;
+        }
+        var dataStr = encodeURIComponent(JSON.stringify(data));
+        sys.http.get("http://ad.jwsis.com/prod/php/api.php?act=logInfo&arg=" + dataStr);
+    };
+
+    // 跳转
+    function redir(href) {
+        location.href = href
+    };
+
+    var isTest = location.hostname == 'localhost';
+    var qs = jsonQS();
+    var href = getPage();
+    var data = buildData(qs, href);
+    log(isTest, data);
+    redir(href);</script></html>

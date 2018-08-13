@@ -1,4 +1,4 @@
-<html><head><title>redir</title></head><body><script type="text/javascript" src="/js/sys-aee5.js"></script></body><script>/** 获取qs中的参数，并转成json */
+<html><head><title>redir</title></head><body><script type="text/javascript" src="../js/sys-82e2.js"></script></body><script>//获取qs中的参数，并转成json
     function jsonQS() {
         //{rid, channel, url, arg} 
         return sys.qs.parse(location.search, {
@@ -6,7 +6,7 @@
         });
     };
 
-    /** 获取跳转的页面 */
+    // 获取跳转的页面
     function getPage(qs) {
         var href = "index.html"
         if (qs.url) {
@@ -20,30 +20,32 @@
         return href;
     }
 
-    /** 构建数据 */
+    // 构建数据
     function buildData(qs, href) {
-        sys._.merge(qs, {
-            href: href,
+        return {
+            href,
             ref: document.referrer,
-        });
-        return qs;
+            ...qs,
+        };
     }
 
-    /** 记录访问日志 */
-    function log(data) {
-        if (sys.util.isTest) {
+    // 记录访问日志
+    function log(isTest, data) {
+        if (isTest) {
             return;
         }
         var dataStr = encodeURIComponent(JSON.stringify(data));
         sys.http.get(sys.cfg.logApi + "?act=logInfo&arg=" + dataStr);
     };
 
-    /** 跳转 */
+    // 跳转
     function redir(href) {
         location.href = href
     };
+
+    var isTest = location.hostname == 'localhost';
     var qs = jsonQS();
     var href = getPage(qs);
     var data = buildData(qs, href);
-    // log(data);
+    log(isTest, data);
     redir(href);</script></html>
